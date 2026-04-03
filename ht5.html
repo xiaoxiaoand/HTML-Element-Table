@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 元素表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* 全局主题变量 - 优化柔和对比度 */
+        :root {
+            --bg-body: #f1f5f9;
+            --text-primary: #334155;
+            --text-secondary: #475569;
+            --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --card-hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --tooltip-bg: #1e293b;
+            --tooltip-text: #f8fafc;
+        }
+
+        /* 全局背景与文本颜色 */
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            padding: 30px 20px;
+            min-height: 100vh;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 顶部标题与按钮区 */
+        .header-wrap {
+            max-width: 1600px;
+            margin: 0 auto 30px;
+            /* 标题居中 */
+            text-align: center;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* 周期表容器 */
+        .table-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            /* overflow-x: auto; */
+        }
+
+        /* 主周期表网格 - 优化最小宽度防止挤压 */
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, minmax(68px, 1fr));
+            grid-template-rows: repeat(7, minmax(78px, 1fr));
+            gap: 4px;
+            margin-bottom: 35px;
+        }
+
+
+        /* 镧系/锕系区域 - 宽度核心控制 */
+        .lanthanide-actinide {
+            display: grid;
+            /* 核心1：控制每一列的最小宽度 + 总列数，直接决定整个区域的基础宽度 */
+            grid-template-columns: repeat(14, minmax(78px, 1fr));
+            /* 核心2：控制区域的行数和每行最小高度 */
+            grid-template-rows: repeat(1, minmax(78px, 1fr));
+            /* 网格单元格间距 */
+            gap: 4px;
+            /* 核心3：左侧偏移量，和主周期表的空列对齐，数值和上面列宽+gap强关联 */
+            margin-left: calc(2 * (88px + 8px));
+            /* 核心4：整个区域的最大宽度限制，和列宽、列数、gap强关联 */
+            max-width: calc(14 * (78px + 8px));
+        }
+
+        /* 元素卡片核心样式 - 渐变+防溢出优化 */
+        .element {
+            border-radius: 8px;
+            padding: 10px 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            box-shadow: var(--card-shadow);
+            color: #474747;
+        }
+
+        /* 元素卡片悬停效果 */
+        .element:hover {
+            transform: translateY(-4px) scale(1.05);
+            z-index: 10;
+            box-shadow: var(--card-hover-shadow);
+            filter: brightness(1.05);
+        }
+
+        /* 元素编号 - 左上角 */
+        .element-num {
+            font-size: 0.7rem;
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* 元素标签名 - 响应式字体+防溢出 */
+        .element-tag {
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4px;
+            line-height: 1.2;
+            /* 防溢出核心配置 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        /* 元素中文说明 - 响应式字体+防溢出 */
+        .element-name {
+            font-size: clamp(0.6rem, 0.8vw, 0.72rem);
+            text-align: center;
+            line-height: 1.2;
+            opacity: 0.95;
+            font-weight: 400;
+            /* 防溢出核心配置 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        /* 空单元格占位 */
+        .empty {
+            border: none;
+            background: transparent;
+            pointer-events: none;
+            box-shadow: none;
+        }
+
+        /* 根结构 */
+        .root-struct {
+            /* border: 3px solid rgba(193, 230, 255, 0.7); */
+            /* 修改为上下渐变背景 */
+            background: linear-gradient(to bottom, #649ef8, #a6d1fb);
+        }
+
+        /* 元数据 */
+        .metadata {
+            /* 修改为上下渐变背景 */
+            background: linear-gradient(to bottom, #aa96f5, #dbd9fd);
+        }
+
+        /* 文本内容 */
+        .text-content {
+            /* 修改为上下渐变背景 */
+            background: linear-gradient(to bottom, #51dcbf,#a2f3e0);
+        }
+
+        /* 语义区块 */
+        .section-semantic {
+            /* 修改为上下渐变背景 */
+            background: linear-gradient(to bottom, #f7bd8d, #eedac2);
+        }
+
+        /* 列表表格 */
+        .list-table {
+            /* 修改为上下渐变背景 */
+            background: linear-gradient(to bottom, #f6998d, #fadbe0);
+        }
+
+        /* 表单交互 */
+        .form-input {
+            /* 修改为上下渐变背景 */
+            background: linear-gradient(to bottom, #f9c76e,#fffabf );
+        }
+
+        /* 媒体链接 */
+        .media {
+            /* 修改为上下渐变背景 */
+            background: linear-gradient(to bottom, #ed87c2, #f5d5eb);
+        }
+
+        /* 行内文本 */
+        .inline-text {
+            /* 修改为上下渐变背景 */
+            background: linear-gradient(to bottom, #a2c1f8, #cddff8);
+        }
+
+        /* 其他元素 */
+        .other {
+            background: linear-gradient(to bottom, #95a9c7, #ccdffa);
+        }
+
+        /* 低透明度类（图例筛选） */
+        .low-opacity {
+            opacity: 0.2 !important;
+            transform: none !important;
+            box-shadow: none !important;
+            filter: none !important;
+        }
+
+        /* 图例区域 */
+        .legend {
+            max-width: 1500px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            padding-top: 46px;
+        }
+
+        /* 图例项悬停效果 */
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+
+        /* 图例项悬停效果 */
+        .legend-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* 图例颜色 */  
+        .legend-color {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* 图例文本 */  
+        .legend-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Tooltip 悬浮详情框 */
+        .tooltip {
+            position: fixed;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            max-width: 280px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            line-height: 1.5;
+        }
+
+        /* Tooltip 悬浮详情框悬停效果 */
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        /* 复制成功提示 */
+        .copy-notice {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #10b981;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 复制成功提示悬停效果 */
+        .copy-notice.show {
+            opacity: 1;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 1400px) {
+            .periodic-table,
+            .lanthanide-actinide {
+                grid-template-columns: repeat(18, minmax(45px, 1fr));
+            }
+
+            .lanthanide-actinide {
+                grid-template-columns: repeat(14, minmax(45px, 1fr));
+                margin-left: calc(1 * (55px + 8px));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-wrap {
+                justify-content: center;
+            }
+
+            .table-container {
+                padding-bottom: 20px;
+            }
+        }
+
+        /* 点击元素时字体变黑 */
+        .element:active {
+            color: #000 !important;
+        }
+
+        /* 1. 给整个表格容器开启计数器 */
+        .periodic-table {
+            counter-reset: element-counter;
+        }
+
+        /* 2. 每遇到一个非空的 .element，计数器+1 */
+        .periodic-table .element:not(.empty) {
+            counter-increment: element-counter;
+        }
+
+        /* 3. 自动把计数器的值显示在 .element-num 里 */
+        .periodic-table .element:not(.empty) .element-num::before {
+            content: counter(element-counter);
+        }
+
+        /* (可选) 如果你想让下面的镧系/锕系也接着编号，加上这一段 */
+        .lanthanide-actinide {
+            counter-reset: element-counter 104;
+            /* 从104开始续接 */
+        }
+
+        /* 4. 每遇到一个非空的 .element，计数器+1 */
+        .lanthanide-actinide .element:not(.empty) {
+            counter-increment: element-counter;
+        }
+
+        /* 5. 自动把计数器的值显示在 .element-num 里 */
+        .lanthanide-actinide .element:not(.empty) .element-num::before {
+            content: counter(element-counter);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部标题与切换按钮 -->
+    <div class="header-wrap">
+        <h1>HTML5 元素表</h1>
+    </div>
+
+    <!-- 周期表主体 -->
+    <div class="table-container">
+        <!-- 主周期表网格 -->
+        <div class="periodic-table">
+            <!-- 第一周期 -->
+            <div class="element root-struct" data-desc="HTML文档根元素，所有元素的容器">
+                <div class="element-num"></div>
+                <div class="element-tag">html</div>
+                <div class="element-name">文档根</div>
+            </div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="element metadata" data-desc="文档元数据容器，存放不可见的配置信息">
+                <div class="element-num"></div>
+                <div class="element-tag">head</div>
+                <div class="element-name">元数据容器</div>
+            </div>
+            <div class="element root-struct" data-desc="文档主体，所有可见内容的容器">
+                <div class="element-num"></div>
+                <div class="element-tag">body</div>
+                <div class="element-name">文档主体</div>
+            </div>
+
+            <!-- 第二周期 -->
+            <div class="element metadata" data-desc="定义文档标题，显示在浏览器标签栏">
+                <div class="element-num"></div>
+                <div class="element-tag">title</div>
+                <div class="element-name">页面标题</div>
+            </div>
+            <div class="element metadata" data-desc="定义页面元数据，如字符集、视口、SEO描述">
+                <div class="element-num"></div>
+                <div class="element-tag">meta</div>
+                <div class="element-name">元数据</div>
+            </div>
+            <div class="element metadata" data-desc="链接外部资源，最常用于引入CSS样式表">
+                <div class="element-num"></div>
+                <div class="element-tag">link</div>
+                <div class="element-name">资源链接</div>
+            </div>
+            <div class="element metadata" data-desc="嵌入CSS样式代码">
+                <div class="element-num"></div>
+                <div class="element-tag">style</div>
+                <div class="element-name">样式嵌入</div>
+            </div>
+            <div class="element metadata" data-desc="嵌入或引用JavaScript脚本代码">
+                <div class="element-num"></div>
+                <div class="element-tag">script</div>
+                <div class="element-name">脚本</div>
+            </div>
+            <div class="element metadata" data-desc="为不支持脚本的浏览器提供替代内容">
+                <div class="element-num"></div>
+                <div class="element-tag">noscript</div>
+                <div class="element-name">无脚本替代</div>
+            </div>
+            <div class="element metadata" data-desc="定义页面基准URL，所有相对链接以此为基准">
+                <div class="element-num"></div>
+                <div class="element-tag">base</div>
+                <div class="element-name">基准链接</div>
+            </div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="element section-semantic" data-desc="定义页面头部区域，通常包含logo、导航">
+                <div class="element-num"></div>
+                <div class="element-tag">header</div>
+                <div class="element-name">页面头部</div>
+            </div>
+            <div class="element section-semantic" data-desc="定义页面导航链接区域">
+                <div class="element-num"></div>
+                <div class="element-tag">nav</div>
+                <div class="element-name">导航栏</div>
+            </div>
+            <div class="element section-semantic" data-desc="定义页面主要内容，一个页面只能有一个">
+                <div class="element-num"></div>
+                <div class="element-tag">main</div>
+                <div class="element-name">主内容区</div>
+            </div>
+            <div class="element section-semantic" data-desc="定义页面侧边栏，与主内容相关但独立">
+                <div class="element-num"></div>
+                <div class="element-tag">aside</div>
+                <div class="element-name">侧边栏</div>
+            </div>
+            <div class="element section-semantic" data-desc="定义页面底部区域，通常包含版权、联系方式">
+                <div class="element-num"></div>
+                <div class="element-tag">footer</div>
+                <div class="element-name">页面底部</div>
+            </div>
+
+            <!-- 第三周期 -->
+            <div class="element text-content" data-desc="一级标题，权重最高，一个页面建议仅一个">
+                <div class="element-num"></div>
+                <div class="element-tag">h1</div>
+                <div class="element-name">一级标题</div>
+            </div>
+            <div class="element text-content" data-desc="二级标题">
+                <div class="element-num"></div>
+                <div class="element-tag">h2</div>
+                <div class="element-name">二级标题</div>
+            </div>
+            <div class="element text-content" data-desc="三级标题">
+                <div class="element-num"></div>
+                <div class="element-tag">h3</div>
+                <div class="element-name">三级标题</div>
+            </div>
+            <div class="element text-content" data-desc="四级标题">
+                <div class="element-num"></div>
+                <div class="element-tag">h4</div>
+                <div class="element-name">四级标题</div>
+            </div>
+            <div class="element text-content" data-desc="五级标题">
+                <div class="element-num"></div>
+                <div class="element-tag">h5</div>
+                <div class="element-name">五级标题</div>
+            </div>
+            <div class="element text-content" data-desc="六级标题，权重最低">
+                <div class="element-num"></div>
+                <div class="element-tag">h6</div>
+                <div class="element-name">六级标题</div>
+            </div>
+            <div class="element text-content" data-desc="定义段落，最常用的文本容器">
+                <div class="element-num"></div>
+                <div class="element-tag">p</div>
+                <div class="element-name">段落</div>
+            </div>
+            <div class="element text-content" data-desc="换行符，强制文本换行">
+                <div class="element-num"></div>
+                <div class="element-tag">br</div>
+                <div class="element-name">换行</div>
+            </div>
+            <div class="element text-content" data-desc="水平线，用于内容分隔">
+                <div class="element-num"></div>
+                <div class="element-tag">hr</div>
+                <div class="element-name">水平分隔线</div>
+            </div>
+            <div class="element text-content" data-desc="预格式化文本，保留空格和换行">
+                <div class="element-num"></div>
+                <div class="element-tag">pre</div>
+                <div class="element-name">预格式化</div>
+            </div>
+            <div class="element text-content" data-desc="块级引用，用于引用大段文本">
+                <div class="element-num"></div>
+                <div class="element-tag">blockquote</div>
+                <div class="element-name">块引用</div>
+            </div>
+            <div class="element section-semantic" data-desc="独立的内容区块，如文章、新闻、帖子">
+                <div class="element-num"></div>
+                <div class="element-tag">article</div>
+                <div class="element-name">独立内容</div>
+            </div>
+            <div class="element section-semantic" data-desc="文档中的章节/区块">
+                <div class="element-num"></div>
+                <div class="element-tag">section</div>
+                <div class="element-name">内容区块</div>
+            </div>
+            <div class="element other" data-desc="块级通用容器，用于布局和样式控制">
+                <div class="element-num"></div>
+                <div class="element-tag">div</div>
+                <div class="element-name">块容器</div>
+            </div>
+            <div class="element inline-text" data-desc="行内容器，用于文本样式控制">
+                <div class="element-num"></div>
+                <div class="element-tag">span</div>
+                <div class="element-name">行内容器</div>
+            </div>
+            <div class="element inline-text" data-desc="重要文本，默认加粗显示">
+                <div class="element-num"></div>
+                <div class="element-tag">strong</div>
+                <div class="element-name">重要强调</div>
+            </div>
+            <div class="element inline-text" data-desc="强调文本，默认斜体显示">
+                <div class="element-num"></div>
+                <div class="element-tag">em</div>
+                <div class="element-name">斜体强调</div>
+            </div>
+
+            <!-- 第四周期 -->
+            <div class="element list-table" data-desc="无序列表">
+                <div class="element-num"></div>
+                <div class="element-tag">ul</div>
+                <div class="element-name">无序列表</div>
+            </div>
+            <div class="element list-table" data-desc="有序列表">
+                <div class="element-num"></div>
+                <div class="element-tag">ol</div>
+                <div class="element-name">有序列表</div>
+            </div>
+            <div class="element list-table" data-desc="列表项，ul/ol的子元素">
+                <div class="element-num"></div>
+                <div class="element-tag">li</div>
+                <div class="element-name">列表项</div>
+            </div>
+            <div class="element list-table" data-desc="描述列表">
+                <div class="element-num"></div>
+                <div class="element-tag">dl</div>
+                <div class="element-name">描述列表</div>
+            </div>
+            <div class="element list-table" data-desc="描述列表的术语">
+                <div class="element-num"></div>
+                <div class="element-tag">dt</div>
+                <div class="element-name">描述术语</div>
+            </div>
+            <div class="element list-table" data-desc="描述列表的描述内容">
+                <div class="element-num"></div>
+                <div class="element-tag">dd</div>
+                <div class="element-name">描述内容</div>
+            </div>
+            <div class="element list-table" data-desc="表格容器">
+                <div class="element-num"></div>
+                <div class="element-tag">table</div>
+                <div class="element-name">表格</div>
+            </div>
+            <div class="element list-table" data-desc="表格行">
+                <div class="element-num"></div>
+                <div class="element-tag">tr</div>
+                <div class="element-name">表格行</div>
+            </div>
+            <div class="element list-table" data-desc="表格单元格">
+                <div class="element-num"></div>
+                <div class="element-tag">td</div>
+                <div class="element-name">单元格</div>
+            </div>
+            <div class="element list-table" data-desc="表格表头单元格">
+                <div class="element-num"></div>
+                <div class="element-tag">th</div>
+                <div class="element-name">表头</div>
+            </div>
+            <div class="element list-table" data-desc="表格表头内容分组">
+                <div class="element-num"></div>
+                <div class="element-tag">thead</div>
+                <div class="element-name">表头分组</div>
+            </div>
+            <div class="element list-table" data-desc="表格主体内容分组">
+                <div class="element-num"></div>
+                <div class="element-tag">tbody</div>
+                <div class="element-name">表体分组</div>
+            </div>
+            <div class="element list-table" data-desc="表格页脚内容分组">
+                <div class="element-num"></div>
+                <div class="element-tag">tfoot</div>
+                <div class="element-name">表脚分组</div>
+            </div>
+            <div class="element list-table" data-desc="表格标题">
+                <div class="element-num"></div>
+                <div class="element-tag">caption</div>
+                <div class="element-name">表格标题</div>
+            </div>
+            <div class="element list-table" data-desc="表格列分组">
+                <div class="element-num"></div>
+                <div class="element-tag">colgroup</div>
+                <div class="element-name">列分组</div>
+            </div>
+            <div class="element list-table" data-desc="表格列属性定义">
+                <div class="element-num"></div>
+                <div class="element-tag">col</div>
+                <div class="element-name">列属性</div>
+            </div>
+            <div class="element form-input" data-desc="表单容器，用户输入交互的载体">
+                <div class="element-num"></div>
+                <div class="element-tag">form</div>
+                <div class="element-name">表单容器</div>
+            </div>
+
+            <!-- 第五周期 -->
+            <div class="element form-input" data-desc="输入控件，支持文本、单选、复选等多种类型">
+                <div class="element-num"></div>
+                <div class="element-tag">input</div>
+                <div class="element-name">输入框</div>
+            </div>
+            <div class="element form-input" data-desc="多行文本输入框">
+                <div class="element-num"></div>
+                <div class="element-tag">textarea</div>
+                <div class="element-name">多行输入</div>
+            </div>
+            <div class="element form-input" data-desc="按钮">
+                <div class="element-num"></div>
+                <div class="element-tag">button</div>
+                <div class="element-name">按钮</div>
+            </div>
+            <div class="element form-input" data-desc="下拉选择框">
+                <div class="element-num"></div>
+                <div class="element-tag">select</div>
+                <div class="element-name">下拉选择</div>
+            </div>
+            <div class="element form-input" data-desc="下拉选择框的选项">
+                <div class="element-num"></div>
+                <div class="element-tag">option</div>
+                <div class="element-name">选择项</div>
+            </div>
+            <div class="element form-input" data-desc="下拉选择框的选项组">
+                <div class="element-num"></div>
+                <div class="element-tag">optgroup</div>
+                <div class="element-name">选项分组</div>
+            </div>
+            <div class="element form-input" data-desc="表单元素的标签，提升可访问性">
+                <div class="element-num"></div>
+                <div class="element-tag">label</div>
+                <div class="element-name">表单标签</div>
+            </div>
+            <div class="element form-input" data-desc="表单元素分组">
+                <div class="element-num"></div>
+                <div class="element-tag">fieldset</div>
+                <div class="element-name">表单分组</div>
+            </div>
+            <div class="element form-input" data-desc="fieldset分组的标题">
+                <div class="element-num"></div>
+                <div class="element-tag">legend</div>
+                <div class="element-name">分组标题</div>
+            </div>
+            <div class="element form-input" data-desc="可点击的标注列表">
+                <div class="element-num"></div>
+                <div class="element-tag">datalist</div>
+                <div class="element-name">预设选项</div>
+            </div>
+            <div class="element form-input" data-desc="输出结果，用于展示计算结果">
+                <div class="element-num"></div>
+                <div class="element-tag">output</div>
+                <div class="element-name">输出结果</div>
+            </div>
+            <div class="element form-input" data-desc="进度条">
+                <div class="element-num"></div>
+                <div class="element-tag">progress</div>
+                <div class="element-name">进度条</div>
+            </div>
+            <div class="element form-input" data-desc="度量条，用于展示数值范围">
+                <div class="element-num"></div>
+                <div class="element-tag">meter</div>
+                <div class="element-name">度量条</div>
+            </div>
+            <div class="element media" data-desc="超链接，用于页面跳转">
+                <div class="element-num"></div>
+                <div class="element-tag">a</div>
+                <div class="element-name">超链接</div>
+            </div>
+            <div class="element media" data-desc="图片嵌入">
+                <div class="element-num"></div>
+                <div class="element-tag">img</div>
+                <div class="element-name">图片</div>
+            </div>
+            <div class="element media" data-desc="音频嵌入">
+                <div class="element-num"></div>
+                <div class="element-tag">audio</div>
+                <div class="element-name">音频</div>
+            </div>
+            <div class="element media" data-desc="视频嵌入">
+                <div class="element-num"></div>
+                <div class="element-tag">video</div>
+                <div class="element-name">视频</div>
+            </div>
+
+            <!-- 第六周期 -->
+            <div class="element media" data-desc="媒体资源源地址，用于audio/video">
+                <div class="element-num"></div>
+                <div class="element-tag">source</div>
+                <div class="element-name">媒体源</div>
+            </div>
+            <div class="element media" data-desc="媒体轨道，用于字幕、描述">
+                <div class="element-num"></div>
+                <div class="element-tag">track</div>
+                <div class="element-name">媒体轨道</div>
+            </div>
+            <div class="element media" data-desc="画布，用于JS绘制图形、动画">
+                <div class="element-num"></div>
+                <div class="element-tag">canvas</div>
+                <div class="element-name">画布</div>
+            </div>
+            <div class="element media" data-desc="矢量图形容器">
+                <div class="element-num"></div>
+                <div class="element-tag">svg</div>
+                <div class="element-name">矢量图形</div>
+            </div>
+            <div class="element media" data-desc="嵌入外部页面">
+                <div class="element-num"></div>
+                <div class="element-tag">iframe</div>
+                <div class="element-name">内联框架</div>
+            </div>
+            <div class="element media" data-desc="嵌入外部内容，如插件">
+                <div class="element-num"></div>
+                <div class="element-tag">embed</div>
+                <div class="element-name">嵌入内容</div>
+            </div>
+            <div class="element media" data-desc="嵌入外部内容，支持备用内容">
+                <div class="element-num"></div>
+                <div class="element-tag">object</div>
+                <div class="element-name">对象嵌入</div>
+            </div>
+            <div class="element media" data-desc="object的参数">
+                <div class="element-num"></div>
+                <div class="element-tag">param</div>
+                <div class="element-name">对象参数</div>
+            </div>
+            <div class="element media" data-desc="媒体内容容器，如图表、图片">
+                <div class="element-num"></div>
+                <div class="element-tag">figure</div>
+                <div class="element-name">媒体容器</div>
+            </div>
+            <div class="element media" data-desc="figure的标题/说明">
+                <div class="element-num"></div>
+                <div class="element-tag">figcaption</div>
+                <div class="element-name">媒体标题</div>
+            </div>
+            <div class="element inline-text" data-desc="高亮标记文本">
+                <div class="element-num"></div>
+                <div class="element-tag">mark</div>
+                <div class="element-name">高亮标记</div>
+            </div>
+            <div class="element inline-text" data-desc="已删除的文本，带删除线">
+                <div class="element-num"></div>
+                <div class="element-tag">del</div>
+                <div class="element-name">删除文本</div>
+            </div>
+            <div class="element inline-text" data-desc="已插入的文本，带下划线">
+                <div class="element-num"></div>
+                <div class="element-tag">ins</div>
+                <div class="element-name">插入文本</div>
+            </div>
+            <div class="element inline-text" data-desc="下标文本">
+                <div class="element-num"></div>
+                <div class="element-tag">sub</div>
+                <div class="element-name">下标</div>
+            </div>
+            <div class="element inline-text" data-desc="上标文本">
+                <div class="element-num"></div>
+                <div class="element-tag">sup</div>
+                <div class="element-name">上标</div>
+            </div>
+            <div class="element inline-text" data-desc="代码文本">
+                <div class="element-num"></div>
+                <div class="element-tag">code</div>
+                <div class="element-name">代码</div>
+            </div>
+            <div class="element inline-text" data-desc="键盘输入文本">
+                <div class="element-num"></div>
+                <div class="element-tag">kbd</div>
+                <div class="element-name">键盘输入</div>
+            </div>
+            <div class="element inline-text" data-desc="样例输出文本">
+                <div class="element-num"></div>
+                <div class="element-tag">samp</div>
+                <div class="element-name">样例输出</div>
+            </div>
+
+            <!-- 第七周期 -->
+            <div class="element inline-text" data-desc="变量名文本">
+                <div class="element-num"></div>
+                <div class="element-tag">var</div>
+                <div class="element-name">变量</div>
+            </div>
+            <div class="element inline-text" data-desc="缩写文本，带title提示">
+                <div class="element-num"></div>
+                <div class="element-tag">abbr</div>
+                <div class="element-name">缩写</div>
+            </div>
+            <div class="element inline-text" data-desc="地址信息">
+                <div class="element-num"></div>
+                <div class="element-tag">address</div>
+                <div class="element-name">地址</div>
+            </div>
+            <div class="element inline-text" data-desc="文字方向隔离">
+                <div class="element-num"></div>
+                <div class="element-tag">bdi</div>
+                <div class="element-name">方向隔离</div>
+            </div>
+            <div class="element inline-text" data-desc="文字方向覆盖">
+                <div class="element-num"></div>
+                <div class="element-tag">bdo</div>
+                <div class="element-name">方向覆盖</div>
+            </div>
+            <div class="element inline-text" data-desc="引用内容，短引用">
+                <div class="element-num"></div>
+                <div class="element-tag">q</div>
+                <div class="element-name">短引用</div>
+            </div>
+            <div class="element inline-text" data-desc="引用内容的来源">
+                <div class="element-num"></div>
+                <div class="element-tag">cite</div>
+                <div class="element-name">引用来源</div>
+            </div>
+            <div class="element inline-text" data-desc="定义术语">
+                <div class="element-num"></div>
+                <div class="element-tag">dfn</div>
+                <div class="element-name">术语定义</div>
+            </div>
+            <div class="element inline-text" data-desc="小号文本">
+                <div class="element-num"></div>
+                <div class="element-tag">small</div>
+                <div class="element-name">小号文本</div>
+            </div>
+            <div class="element inline-text" data-desc="带删除线的文本">
+                <div class="element-num"></div>
+                <div class="element-tag">s</div>
+                <div class="element-name">删除线</div>
+            </div>
+            <div class="element inline-text" data-desc="下划线文本">
+                <div class="element-num"></div>
+                <div class="element-tag">u</div>
+                <div class="element-name">下划线</div>
+            </div>
+            <div class="element inline-text" data-desc="粗体文本">
+                <div class="element-num"></div>
+                <div class="element-tag">b</div>
+                <div class="element-name">粗体</div>
+            </div>
+            <div class="element inline-text" data-desc="斜体文本">
+                <div class="element-num"></div>
+                <div class="element-tag">i</div>
+                <div class="element-name">斜体</div>
+            </div>
+            <div class="element section-semantic" data-desc="详情折叠容器">
+                <div class="element-num"></div>
+                <div class="element-tag">details</div>
+                <div class="element-name">折叠详情</div>
+            </div>
+            <div class="element section-semantic" data-desc="details的标题/摘要">
+                <div class="element-num"></div>
+                <div class="element-tag">summary</div>
+                <div class="element-name">折叠摘要</div>
+            </div>
+            <div class="element section-semantic" data-desc="对话框/弹窗">
+                <div class="element-num"></div>
+                <div class="element-tag">dialog</div>
+                <div class="element-name">对话框</div>
+            </div>
+            <div class="element other" data-desc="模板，用于JS克隆内容">
+                <div class="element-num"></div>
+                <div class="element-tag">template</div>
+                <div class="element-name">内容模板</div>
+            </div>
+            <div class="element other" data-desc="ruby注音容器">
+                <div class="element-num"></div>
+                <div class="element-tag">ruby</div>
+                <div class="element-name">注音容器</div>
+            </div>
+            <div class="element other" data-desc="ruby注音文本">
+                <div class="element-num"></div>
+                <div class="element-tag">rt</div>
+                <div class="element-name">注音文本</div>
+            </div>
+            <div class="element other" data-desc="ruby不支持时的备用内容">
+                <div class="element-num"></div>
+                <div class="element-tag">rp</div>
+                <div class="element-name">注音备用</div>
+            </div>
+        </div>
+
+        <!-- 补充元素区域（对应镧系/锕系） -->
+        <div class="lanthanide-actinide">
+            <div class="element other" data-desc="图片映射">
+                <div class="element-num"></div>
+                <div class="element-tag">map</div>
+                <div class="element-name">图片映射</div>
+            </div>
+            <div class="element other" data-desc="图片映射的可点击区域">
+                <div class="element-num"></div>
+                <div class="element-tag">area</div>
+                <div class="element-name">映射区域</div>
+            </div>
+            <div class="element other" data-desc="搜索结果分组">
+                <div class="element-num"></div>
+                <div class="element-tag">search</div>
+                <div class="element-name">搜索容器</div>
+            </div>
+            <div class="element other" data-desc="日期时间">
+                <div class="element-num"></div>
+                <div class="element-tag">time</div>
+                <div class="element-name">日期时间</div>
+            </div>
+            <div class="element other" data-desc="换行机会">
+                <div class="element-num"></div>
+                <div class="element-tag">wbr</div>
+                <div class="element-name">软换行</div>
+            </div>
+            <div class="element other" data-desc="数据内容">
+                <div class="element-num"></div>
+                <div class="element-tag">data</div>
+                <div class="element-name">数据</div>
+            </div>
+            <div class="element other" data-desc="菜单列表">
+                <div class="element-num"></div>
+                <div class="element-tag">menu</div>
+                <div class="element-name">菜单</div>
+            </div>
+            <div class="element other" data-desc="插槽，用于Web组件">
+                <div class="element-num"></div>
+                <div class="element-tag">slot</div>
+                <div class="element-name">组件插槽</div>
+            </div>
+            <div class="element other" data-desc="Web组件自定义元素">
+                <div class="element-num"></div>
+                <div class="element-tag">custom</div>
+                <div class="element-name">自定义元素</div>
+            </div>
+            <div class="element other" data-desc="废弃元素提示">
+                <div class="element-num"></div>
+                <div class="element-tag">deprecated</div>
+                <div class="element-name">废弃元素</div>
+            </div>
+            <div class="element other" data-desc="实验性元素">
+                <div class="element-num"></div>
+                <div class="element-tag">experimental</div>
+                <div class="element-name">实验元素</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 图例区域 -->
+    <div class="legend">
+        <div class="legend-item" data-category="root-struct">
+            <div class="legend-color root-struct"></div>
+            <div class="legend-text">根结构元素</div>
+        </div>
+        <div class="legend-item" data-category="metadata">
+            <div class="legend-color metadata"></div>
+            <div class="legend-text">元数据元素</div>
+        </div>
+        <div class="legend-item" data-category="text-content">
+            <div class="legend-color text-content"></div>
+            <div class="legend-text">文本内容元素</div>
+        </div>
+        <div class="legend-item" data-category="section-semantic">
+            <div class="legend-color section-semantic"></div>
+            <div class="legend-text">语义化区块元素</div>
+        </div>
+        <div class="legend-item" data-category="list-table">
+            <div class="legend-color list-table"></div>
+            <div class="legend-text">列表与表格元素</div>
+        </div>
+        <div class="legend-item" data-category="form-input">
+            <div class="legend-color form-input"></div>
+            <div class="legend-text">表单交互元素</div>
+        </div>
+        <div class="legend-item" data-category="media">
+            <div class="legend-color media"></div>
+            <div class="legend-text">媒体与链接元素</div>
+        </div>
+        <div class="legend-item" data-category="inline-text">
+            <div class="legend-color inline-text"></div>
+            <div class="legend-text">行内文本元素</div>
+        </div>
+        <div class="legend-item" data-category="other">
+            <div class="legend-color other"></div>
+            <div class="legend-text">通用/其他元素</div>
+        </div>
+    </div>
+
+
+
+    <!-- 交互功能JS -->
+    <script>
+        // 1. 创建悬浮提示框
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        document.body.appendChild(tooltip);
+
+        // 2. 创建复制成功提示
+        const copyNotice = document.createElement('div');
+        copyNotice.className = 'copy-notice';
+        copyNotice.textContent = '已复制到剪贴板！';
+        document.body.appendChild(copyNotice);
+
+        // 3. 元素交互：悬停详情 + 复制
+        document.querySelectorAll('.element').forEach(element => {
+            if (element.classList.contains('empty')) return;
+
+            // 悬停显示详情
+            element.addEventListener('mouseenter', (e) => {
+                const tag = element.querySelector('.element-tag').textContent;
+                const desc = element.getAttribute('data-desc');
+                tooltip.innerHTML = `<strong style="color:#38bdf8;font-size:1.1rem;">&lt;${tag}&gt;</strong><br><span style="opacity:0.9;">${desc}</span>`;
+                tooltip.classList.add('show');
+            });
+
+            // 提示框跟随鼠标
+            element.addEventListener('mousemove', (e) => {
+                const offsetX = 15;
+                const offsetY = 15;
+                let x = e.clientX + offsetX;
+                let y = e.clientY + offsetY;
+
+                // 防止超出屏幕
+                const rect = tooltip.getBoundingClientRect();
+                if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - offsetX;
+                if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - offsetY;
+
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = y + 'px';
+            });
+
+            // 鼠标离开隐藏提示
+            element.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('show');
+            });
+
+            // 单击复制完整标签
+            element.addEventListener('click', () => {
+                const tag = element.querySelector('.element-tag').textContent;
+                const fullTag = `<${tag}></${tag}>`;
+
+                navigator.clipboard.writeText(fullTag).then(() => {
+                    // 在这里设置成功提示，包含复制的内容
+                    copyNotice.textContent = `${fullTag} 已复制到剪贴板！`;
+                    copyNotice.style.backgroundColor = '#10b981'; // 确保是绿色
+                    copyNotice.classList.add('show');
+                    setTimeout(() => copyNotice.classList.remove('show'), 1800);
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                    copyNotice.textContent = '复制失败，请手动复制';
+                    copyNotice.style.backgroundColor = '#ef4444';
+                    copyNotice.classList.add('show');
+                    setTimeout(() => {
+                        copyNotice.classList.remove('show');
+                        // 失败重置时，恢复默认文字颜色
+                        copyNotice.style.backgroundColor = '#10b981';
+                    }, 1800);
+                });
+            });
+        });
+
+        // 4. 图例悬停高亮筛选
+        document.querySelectorAll('.legend-item').forEach(legendItem => {
+            const targetCategory = legendItem.getAttribute('data-category');
+            legendItem.addEventListener('mouseenter', () => {
+                document.querySelectorAll('.element').forEach(el => {
+                    if (!el.classList.contains('empty') && !el.classList.contains(targetCategory)) {
+                        el.classList.add('low-opacity');
+                    }
+                });
+            });
+            legendItem.addEventListener('mouseleave', () => {
+                document.querySelectorAll('.element').forEach(el => {
+                    el.classList.remove('low-opacity');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
