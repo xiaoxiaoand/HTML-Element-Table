@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 元素层级结构</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        :root {
+            --bg-body: #f1f5f9;
+            --text-primary: #334155;
+            --text-secondary: #475569;
+            --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --tooltip-bg: #1e293b;
+            --tooltip-text: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .header-wrap {
+            max-width: 1400px;
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .tree-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .tree-node {
+            margin-left: 0;
+            position: relative;
+        }
+
+        .tree-node .tree-node {
+            margin-left: 40px;
+        }
+
+        .node-content {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            margin: 4px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            background: white;
+            border: 1px solid #e2e8f0;
+        }
+
+        .node-content:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateX(4px);
+        }
+
+        .node-content.active {
+            background: #eff6ff;
+            border-color: #3b82f6;
+        }
+
+        .toggle-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+            color: #64748b;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        .toggle-icon.leaf {
+            opacity: 0.3;
+        }
+
+        .element-badge {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-right: 12px;
+            min-width: 80px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .element-name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-grow: 1;
+        }
+
+        .element-desc {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-left: 12px;
+            flex-grow: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .children {
+            display: none;
+            position: relative;
+        }
+
+        .children.show {
+            display: block;
+        }
+
+        .children::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 20px;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+        .root-struct .element-badge {
+            background: linear-gradient(135deg, #649ef8, #a6d1fb);
+            color: white;
+        }
+
+        .metadata .element-badge {
+            background: linear-gradient(135deg, #aa96f5, #dbd9fd);
+            color: white;
+        }
+
+        .text-content .element-badge {
+            background: linear-gradient(135deg, #51dcbf, #a2f3e0);
+            color: #1e293b;
+        }
+
+        .section-semantic .element-badge {
+            background: linear-gradient(135deg, #f7bd8d, #eedac2);
+            color: #1e293b;
+        }
+
+        .list-table .element-badge {
+            background: linear-gradient(135deg, #f6998d, #fadbe0);
+            color: #1e293b;
+        }
+
+        .form-input .element-badge {
+            background: linear-gradient(135deg, #f9c76e, #fffabf);
+            color: #1e293b;
+        }
+
+        .media .element-badge {
+            background: linear-gradient(135deg, #ed87c2, #f5d5eb);
+            color: #1e293b;
+        }
+
+        .inline-text .element-badge {
+            background: linear-gradient(135deg, #a2c1f8, #cddff8);
+            color: #1e293b;
+        }
+
+        .other .element-badge {
+            background: linear-gradient(135deg, #95a9c7, #ccdffa);
+            color: #1e293b;
+        }
+
+        .legend {
+            max-width: 1400px;
+            margin: 30px auto 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+
+        .legend-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .legend-color {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .legend-color.root-struct {
+            background: linear-gradient(135deg, #649ef8, #a6d1fb);
+        }
+
+        .legend-color.metadata {
+            background: linear-gradient(135deg, #aa96f5, #dbd9fd);
+        }
+
+        .legend-color.text-content {
+            background: linear-gradient(135deg, #51dcbf, #a2f3e0);
+        }
+
+        .legend-color.section-semantic {
+            background: linear-gradient(135deg, #f7bd8d, #eedac2);
+        }
+
+        .legend-color.list-table {
+            background: linear-gradient(135deg, #f6998d, #fadbe0);
+        }
+
+        .legend-color.form-input {
+            background: linear-gradient(135deg, #f9c76e, #fffabf);
+        }
+
+        .legend-color.media {
+            background: linear-gradient(135deg, #ed87c2, #f5d5eb);
+        }
+
+        .legend-color.inline-text {
+            background: linear-gradient(135deg, #a2c1f8, #cddff8);
+        }
+
+        .legend-color.other {
+            background: linear-gradient(135deg, #95a9c7, #ccdffa);
+        }
+
+        .legend-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .tooltip {
+            position: fixed;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            max-width: 280px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            line-height: 1.5;
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .copy-notice {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #10b981;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .copy-notice.show {
+            opacity: 1;
+        }
+
+        .controls {
+            max-width: 1400px;
+            margin: 0 auto 20px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        .control-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .tree-container.compact .tree-node .children {
+            display: flex !important;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px 0 8px 32px;
+        }
+
+        .tree-container.compact .tree-node .children .tree-node {
+            margin-left: 0;
+        }
+
+        .tree-container.compact .tree-node .children .node-content {
+            padding: 6px 10px;
+            margin: 0;
+            min-width: 100px;
+        }
+
+        .tree-container.compact .tree-node .children .element-name,
+        .tree-container.compact .tree-node .children .element-desc {
+            display: none;
+        }
+
+        .tree-container.compact .tree-node .children .toggle-icon {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .tree-container {
+                padding: 20px 15px;
+            }
+
+            .tree-node .tree-node {
+                margin-left: 24px;
+            }
+
+            .element-desc {
+                display: none;
+            }
+
+            .controls {
+                justify-content: center;
+            }
+
+            .tree-container.compact .tree-node .children {
+                margin-left: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-wrap">
+        <h1>HTML5 元素层级结构</h1>
+        <div class="subtitle">点击节点展开/折叠子元素，悬停查看详情，点击复制标签</div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="expandAll()">全部展开</button>
+        <button class="control-btn" onclick="collapseAll()">全部折叠</button>
+        <button class="control-btn" onclick="toggleCompact()">并拢</button>
+    </div>
+
+    <div class="tree-container">
+        <div id="tree-root"></div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item" data-category="root-struct">
+            <div class="legend-color root-struct"></div>
+            <div class="legend-text">根结构元素</div>
+        </div>
+        <div class="legend-item" data-category="metadata">
+            <div class="legend-color metadata"></div>
+            <div class="legend-text">元数据元素</div>
+        </div>
+        <div class="legend-item" data-category="text-content">
+            <div class="legend-color text-content"></div>
+            <div class="legend-text">文本内容元素</div>
+        </div>
+        <div class="legend-item" data-category="section-semantic">
+            <div class="legend-color section-semantic"></div>
+            <div class="legend-text">语义化区块元素</div>
+        </div>
+        <div class="legend-item" data-category="list-table">
+            <div class="legend-color list-table"></div>
+            <div class="legend-text">列表与表格元素</div>
+        </div>
+        <div class="legend-item" data-category="form-input">
+            <div class="legend-color form-input"></div>
+            <div class="legend-text">表单交互元素</div>
+        </div>
+        <div class="legend-item" data-category="media">
+            <div class="legend-color media"></div>
+            <div class="legend-text">媒体与链接元素</div>
+        </div>
+        <div class="legend-item" data-category="inline-text">
+            <div class="legend-color inline-text"></div>
+            <div class="legend-text">行内文本元素</div>
+        </div>
+        <div class="legend-item" data-category="other">
+            <div class="legend-color other"></div>
+            <div class="legend-text">通用/其他元素</div>
+        </div>
+    </div>
+
+    <script>
+        const htmlElementsTree = {
+            tag: 'html',
+            name: '文档根',
+            desc: 'HTML文档根元素,所有元素的容器',
+            category: 'root-struct',
+            children: [
+                {
+                    tag: 'head',
+                    name: '元数据容器',
+                    desc: '文档元数据容器,存放不可见的配置信息',
+                    category: 'metadata',
+                    children: [
+                        { tag: 'title', name: '页面标题', desc: '定义文档标题,显示在浏览器标签栏', category: 'metadata' },
+                        { tag: 'meta', name: '元数据', desc: '定义页面元数据,如字符集、视口、SEO描述', category: 'metadata' },
+                        { tag: 'link', name: '资源链接', desc: '链接外部资源,最常用于引入CSS样式表', category: 'metadata' },
+                        { tag: 'style', name: '样式嵌入', desc: '嵌入CSS样式代码', category: 'metadata' },
+                        { tag: 'script', name: '脚本', desc: '嵌入或引用JavaScript脚本代码', category: 'metadata' },
+                        { tag: 'noscript', name: '无脚本替代', desc: '为不支持脚本的浏览器提供替代内容', category: 'metadata' },
+                        { tag: 'base', name: '基准链接', desc: '定义页面基准URL,所有相对链接以此为基准', category: 'metadata' }
+                    ]
+                },
+                {
+                    tag: 'body',
+                    name: '文档主体',
+                    desc: '文档主体,所有可见内容的容器',
+                    category: 'root-struct',
+                    children: [
+                        {
+                            tag: '页面结构',
+                            name: '语义化布局',
+                            desc: '页面主要结构区域',
+                            category: 'section-semantic',
+                            children: [
+                                { tag: 'header', name: '页面头部', desc: '定义页面头部区域,通常包含logo、导航', category: 'section-semantic' },
+                                { tag: 'nav', name: '导航栏', desc: '定义页面导航链接区域', category: 'section-semantic' },
+                                { tag: 'main', name: '主内容区', desc: '定义页面主要内容,一个页面只能有一个', category: 'section-semantic' },
+                                { tag: 'aside', name: '侧边栏', desc: '定义页面侧边栏,与主内容相关但独立', category: 'section-semantic' },
+                                { tag: 'footer', name: '页面底部', desc: '定义页面底部区域,通常包含版权、联系方式', category: 'section-semantic' },
+                                { tag: 'article', name: '独立内容', desc: '独立的内容区块,如文章、新闻、帖子', category: 'section-semantic' },
+                                { tag: 'section', name: '内容区块', desc: '文档中的章节/区块', category: 'section-semantic' },
+                                { tag: 'details', name: '折叠详情', desc: '详情折叠容器', category: 'section-semantic', children: [
+                                    { tag: 'summary', name: '折叠摘要', desc: 'details的标题/摘要', category: 'section-semantic' }
+                                ]},
+                                { tag: 'dialog', name: '对话框', desc: '对话框/弹窗', category: 'section-semantic' }
+                            ]
+                        },
+                        {
+                            tag: '标题与文本',
+                            name: '文本内容',
+                            desc: '文本标题和段落元素',
+                            category: 'text-content',
+                            children: [
+                                { tag: 'h1', name: '一级标题', desc: '一级标题,权重最高,一个页面建议仅一个', category: 'text-content' },
+                                { tag: 'h2', name: '二级标题', desc: '二级标题', category: 'text-content' },
+                                { tag: 'h3', name: '三级标题', desc: '三级标题', category: 'text-content' },
+                                { tag: 'h4', name: '四级标题', desc: '四级标题', category: 'text-content' },
+                                { tag: 'h5', name: '五级标题', desc: '五级标题', category: 'text-content' },
+                                { tag: 'h6', name: '六级标题', desc: '六级标题,权重最低', category: 'text-content' },
+                                { tag: 'p', name: '段落', desc: '定义段落,最常用的文本容器', category: 'text-content' },
+                                { tag: 'br', name: '换行', desc: '换行符,强制文本换行', category: 'text-content' },
+                                { tag: 'hr', name: '水平分隔线', desc: '水平线,用于内容分隔', category: 'text-content' },
+                                { tag: 'pre', name: '预格式化', desc: '预格式化文本,保留空格和换行', category: 'text-content' },
+                                { tag: 'blockquote', name: '块引用', desc: '块级引用,用于引用大段文本', category: 'text-content' }
+                            ]
+                        },
+                        {
+                            tag: '列表',
+                            name: '列表元素',
+                            desc: '有序、无序和描述列表',
+                            category: 'list-table',
+                            children: [
+                                { tag: 'ul', name: '无序列表', desc: '无序列表', category: 'list-table', children: [
+                                    { tag: 'li', name: '列表项', desc: '列表项,ul/ol的子元素', category: 'list-table' }
+                                ]},
+                                { tag: 'ol', name: '有序列表', desc: '有序列表', category: 'list-table', children: [
+                                    { tag: 'li', name: '列表项', desc: '列表项,ul/ol的子元素', category: 'list-table' }
+                                ]},
+                                { tag: 'dl', name: '描述列表', desc: '描述列表', category: 'list-table', children: [
+                                    { tag: 'dt', name: '描述术语', desc: '描述列表的术语', category: 'list-table' },
+                                    { tag: 'dd', name: '描述内容', desc: '描述列表的描述内容', category: 'list-table' }
+                                ]}
+                            ]
+                        },
+                        {
+                            tag: '表格',
+                            name: '表格元素',
+                            desc: '表格相关元素',
+                            category: 'list-table',
+                            children: [
+                                { tag: 'table', name: '表格', desc: '表格容器', category: 'list-table', children: [
+                                    { tag: 'caption', name: '表格标题', desc: '表格标题', category: 'list-table' },
+                                    { tag: 'thead', name: '表头分组', desc: '表格表头内容分组', category: 'list-table', children: [
+                                        { tag: 'tr', name: '表格行', desc: '表格行', category: 'list-table', children: [
+                                            { tag: 'th', name: '表头', desc: '表格表头单元格', category: 'list-table' }
+                                        ]}
+                                    ]},
+                                    { tag: 'tbody', name: '表体分组', desc: '表格主体内容分组', category: 'list-table', children: [
+                                        { tag: 'tr', name: '表格行', desc: '表格行', category: 'list-table', children: [
+                                            { tag: 'td', name: '单元格', desc: '表格单元格', category: 'list-table' }
+                                        ]}
+                                    ]},
+                                    { tag: 'tfoot', name: '表脚分组', desc: '表格页脚内容分组', category: 'list-table' },
+                                    { tag: 'colgroup', name: '列分组', desc: '表格列分组', category: 'list-table', children: [
+                                        { tag: 'col', name: '列属性', desc: '表格列属性定义', category: 'list-table' }
+                                    ]}
+                                ]}
+                            ]
+                        },
+                        {
+                            tag: '表单',
+                            name: '表单交互',
+                            desc: '表单和输入控件',
+                            category: 'form-input',
+                            children: [
+                                { tag: 'form', name: '表单容器', desc: '表单容器,用户输入交互的载体', category: 'form-input', children: [
+                                    { tag: 'input', name: '输入框', desc: '输入控件,支持文本、单选、复选等多种类型', category: 'form-input' },
+                                    { tag: 'textarea', name: '多行输入', desc: '多行文本输入框', category: 'form-input' },
+                                    { tag: 'button', name: '按钮', desc: '按钮', category: 'form-input' },
+                                    { tag: 'select', name: '下拉选择', desc: '下拉选择框', category: 'form-input', children: [
+                                        { tag: 'optgroup', name: '选项分组', desc: '下拉选择框的选项组', category: 'form-input', children: [
+                                            { tag: 'option', name: '选择项', desc: '下拉选择框的选项', category: 'form-input' }
+                                        ]}
+                                    ]},
+                                    { tag: 'label', name: '表单标签', desc: '表单元素的标签,提升可访问性', category: 'form-input' },
+                                    { tag: 'fieldset', name: '表单分组', desc: '表单元素分组', category: 'form-input', children: [
+                                        { tag: 'legend', name: '分组标题', desc: 'fieldset分组的标题', category: 'form-input' }
+                                    ]},
+                                    { tag: 'datalist', name: '预设选项', desc: '可点击的标注列表', category: 'form-input' },
+                                    { tag: 'output', name: '输出结果', desc: '输出结果,用于展示计算结果', category: 'form-input' },
+                                    { tag: 'progress', name: '进度条', desc: '进度条', category: 'form-input' },
+                                    { tag: 'meter', name: '度量条', desc: '度量条,用于展示数值范围', category: 'form-input' }
+                                ]}
+                            ]
+                        },
+                        {
+                            tag: '媒体与嵌入',
+                            name: '媒体元素',
+                            desc: '图片、音视频和嵌入内容',
+                            category: 'media',
+                            children: [
+                                { tag: 'a', name: '超链接', desc: '超链接,用于页面跳转', category: 'media' },
+                                { tag: 'img', name: '图片', desc: '图片嵌入', category: 'media' },
+                                { tag: 'audio', name: '音频', desc: '音频嵌入', category: 'media', children: [
+                                    { tag: 'source', name: '媒体源', desc: '媒体资源源地址,用于audio/video', category: 'media' },
+                                    { tag: 'track', name: '媒体轨道', desc: '媒体轨道,用于字幕、描述', category: 'media' }
+                                ]},
+                                { tag: 'video', name: '视频', desc: '视频嵌入', category: 'media', children: [
+                                    { tag: 'source', name: '媒体源', desc: '媒体资源源地址,用于audio/video', category: 'media' },
+                                    { tag: 'track', name: '媒体轨道', desc: '媒体轨道,用于字幕、描述', category: 'media' }
+                                ]},
+                                { tag: 'canvas', name: '画布', desc: '画布,用于JS绘制图形、动画', category: 'media' },
+                                { tag: 'svg', name: '矢量图形', desc: '矢量图形容器', category: 'media' },
+                                { tag: 'iframe', name: '内联框架', desc: '嵌入外部页面', category: 'media' },
+                                { tag: 'embed', name: '嵌入内容', desc: '嵌入外部内容,如插件', category: 'media' },
+                                { tag: 'object', name: '对象嵌入', desc: '嵌入外部内容,支持备用内容', category: 'media', children: [
+                                    { tag: 'param', name: '对象参数', desc: 'object的参数', category: 'media' }
+                                ]},
+                                { tag: 'figure', name: '媒体容器', desc: '媒体内容容器,如图表、图片', category: 'media', children: [
+                                    { tag: 'figcaption', name: '媒体标题', desc: 'figure的标题/说明', category: 'media' }
+                                ]},
+                                { tag: 'map', name: '图片映射', desc: '图片映射', category: 'media', children: [
+                                    { tag: 'area', name: '映射区域', desc: '图片映射的可点击区域', category: 'media' }
+                                ]}
+                            ]
+                        },
+                        {
+                            tag: '行内元素',
+                            name: '行内文本',
+                            desc: '行内容器和文本语义元素',
+                            category: 'inline-text',
+                            children: [
+                                { tag: 'span', name: '行内容器', desc: '行内容器,用于文本样式控制', category: 'inline-text' },
+                                { tag: 'strong', name: '重要强调', desc: '重要文本,默认加粗显示', category: 'inline-text' },
+                                { tag: 'em', name: '斜体强调', desc: '强调文本,默认斜体显示', category: 'inline-text' },
+                                { tag: 'mark', name: '高亮标记', desc: '高亮标记文本', category: 'inline-text' },
+                                { tag: 'del', name: '删除文本', desc: '已删除的文本,带删除线', category: 'inline-text' },
+                                { tag: 'ins', name: '插入文本', desc: '已插入的文本,带下划线', category: 'inline-text' },
+                                { tag: 'sub', name: '下标', desc: '下标文本', category: 'inline-text' },
+                                { tag: 'sup', name: '上标', desc: '上标文本', category: 'inline-text' },
+                                { tag: 'code', name: '代码', desc: '代码文本', category: 'inline-text' },
+                                { tag: 'kbd', name: '键盘输入', desc: '键盘输入文本', category: 'inline-text' },
+                                { tag: 'samp', name: '样例输出', desc: '样例输出文本', category: 'inline-text' },
+                                { tag: 'var', name: '变量', desc: '变量名文本', category: 'inline-text' },
+                                { tag: 'abbr', name: '缩写', desc: '缩写文本,带title提示', category: 'inline-text' },
+                                { tag: 'address', name: '地址', desc: '地址信息', category: 'inline-text' },
+                                { tag: 'bdi', name: '方向隔离', desc: '文字方向隔离', category: 'inline-text' },
+                                { tag: 'bdo', name: '方向覆盖', desc: '文字方向覆盖', category: 'inline-text' },
+                                { tag: 'q', name: '短引用', desc: '引用内容,短引用', category: 'inline-text' },
+                                { tag: 'cite', name: '引用来源', desc: '引用内容的来源', category: 'inline-text' },
+                                { tag: 'dfn', name: '术语定义', desc: '定义术语', category: 'inline-text' },
+                                { tag: 'small', name: '小号文本', desc: '小号文本', category: 'inline-text' },
+                                { tag: 's', name: '删除线', desc: '带删除线的文本', category: 'inline-text' },
+                                { tag: 'u', name: '下划线', desc: '下划线文本', category: 'inline-text' },
+                                { tag: 'b', name: '粗体', desc: '粗体文本', category: 'inline-text' },
+                                { tag: 'i', name: '斜体', desc: '斜体文本', category: 'inline-text' },
+                                { tag: 'time', name: '日期时间', desc: '日期时间', category: 'other' },
+                                { tag: 'data', name: '数据', desc: '数据内容', category: 'other' },
+                                { tag: 'wbr', name: '软换行', desc: '换行机会', category: 'other' }
+                            ]
+                        },
+                        {
+                            tag: '通用容器',
+                            name: '通用元素',
+                            desc: '通用容器和其他元素',
+                            category: 'other',
+                            children: [
+                                { tag: 'div', name: '块容器', desc: '块级通用容器,用于布局和样式控制', category: 'other' },
+                                { tag: 'template', name: '内容模板', desc: '模板,用于JS克隆内容', category: 'other' },
+                                { tag: 'ruby', name: '注音容器', desc: 'ruby注音容器', category: 'other', children: [
+                                    { tag: 'rt', name: '注音文本', desc: 'ruby注音文本', category: 'other' },
+                                    { tag: 'rp', name: '注音备用', desc: 'ruby不支持时的备用内容', category: 'other' }
+                                ]},
+                                { tag: 'menu', name: '菜单', desc: '菜单列表', category: 'other' },
+                                { tag: 'search', name: '搜索容器', desc: '搜索结果分组', category: 'other' },
+                                { tag: 'slot', name: '组件插槽', desc: '插槽,用于Web组件', category: 'other' }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        document.body.appendChild(tooltip);
+
+        const copyNotice = document.createElement('div');
+        copyNotice.className = 'copy-notice';
+        copyNotice.textContent = '已复制到剪贴板！';
+        document.body.appendChild(copyNotice);
+
+        function createTreeNode(node, level = 0) {
+            const nodeDiv = document.createElement('div');
+            nodeDiv.className = 'tree-node';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `node-content ${node.category}`;
+
+            const hasChildren = node.children && node.children.length > 0;
+
+            const toggleIcon = document.createElement('div');
+            toggleIcon.className = `toggle-icon ${hasChildren ? '' : 'leaf'}`;
+            toggleIcon.textContent = hasChildren ? '▶' : '•';
+            contentDiv.appendChild(toggleIcon);
+
+            const badge = document.createElement('div');
+            badge.className = `element-badge ${node.category}`;
+            badge.textContent = node.tag;
+            contentDiv.appendChild(badge);
+
+            const name = document.createElement('div');
+            name.className = 'element-name';
+            name.textContent = node.name;
+            contentDiv.appendChild(name);
+
+            const desc = document.createElement('div');
+            desc.className = 'element-desc';
+            desc.textContent = node.desc;
+            contentDiv.appendChild(desc);
+
+            nodeDiv.appendChild(contentDiv);
+
+            if (hasChildren) {
+                const childrenDiv = document.createElement('div');
+                childrenDiv.className = 'children';
+
+                node.children.forEach(child => {
+                    childrenDiv.appendChild(createTreeNode(child, level + 1));
+                });
+
+                nodeDiv.appendChild(childrenDiv);
+
+                contentDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isExpanded = childrenDiv.classList.contains('show');
+                    
+                    if (isExpanded) {
+                        childrenDiv.classList.remove('show');
+                        toggleIcon.classList.remove('expanded');
+                        contentDiv.classList.remove('active');
+                    } else {
+                        childrenDiv.classList.add('show');
+                        toggleIcon.classList.add('expanded');
+                        contentDiv.classList.add('active');
+                    }
+                });
+            } else {
+                contentDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const fullTag = `<${node.tag}></${node.tag}>`;
+                    
+                    navigator.clipboard.writeText(fullTag).then(() => {
+                        copyNotice.textContent = `${fullTag} 已复制到剪贴板！`;
+                        copyNotice.style.backgroundColor = '#10b981';
+                        copyNotice.classList.add('show');
+                        setTimeout(() => copyNotice.classList.remove('show'), 1800);
+                    }).catch(err => {
+                        console.error('复制失败:', err);
+                        copyNotice.textContent = '复制失败,请手动复制';
+                        copyNotice.style.backgroundColor = '#ef4444';
+                        copyNotice.classList.add('show');
+                        setTimeout(() => {
+                            copyNotice.classList.remove('show');
+                            copyNotice.style.backgroundColor = '#10b981';
+                        }, 1800);
+                    });
+                });
+            }
+
+            contentDiv.addEventListener('mouseenter', (e) => {
+                const tag = node.tag;
+                const desc = node.desc;
+                tooltip.innerHTML = `<strong style="color:#38bdf8;font-size:1.1rem;">&lt;${tag}&gt;</strong><br><span style="opacity:0.9;">${desc}</span>`;
+                tooltip.classList.add('show');
+            });
+
+            contentDiv.addEventListener('mousemove', (e) => {
+                const offsetX = 15;
+                const offsetY = 15;
+                let x = e.clientX + offsetX;
+                let y = e.clientY + offsetY;
+
+                const rect = tooltip.getBoundingClientRect();
+                if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - offsetX;
+                if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - offsetY;
+
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = y + 'px';
+            });
+
+            contentDiv.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('show');
+            });
+
+            return nodeDiv;
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.children').forEach(el => {
+                el.classList.add('show');
+            });
+            document.querySelectorAll('.toggle-icon:not(.leaf)').forEach(el => {
+                el.classList.add('expanded');
+            });
+            document.querySelectorAll('.node-content').forEach(el => {
+                if (el.nextElementSibling && el.nextElementSibling.classList.contains('children')) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.children').forEach(el => {
+                el.classList.remove('show');
+            });
+            document.querySelectorAll('.toggle-icon').forEach(el => {
+                el.classList.remove('expanded');
+            });
+            document.querySelectorAll('.node-content').forEach(el => {
+                el.classList.remove('active');
+            });
+        }
+
+        function toggleCompact() {
+            const treeContainer = document.querySelector('.tree-container');
+            const isCompact = treeContainer.classList.contains('compact');
+            const btn = document.querySelector('button[onclick="toggleCompact()"]');
+            
+            if (isCompact) {
+                treeContainer.classList.remove('compact');
+                btn.textContent = '并拢';
+                btn.classList.remove('active');
+            } else {
+                treeContainer.classList.add('compact');
+                btn.textContent = '散开';
+                btn.classList.add('active');
+            }
+        }
+
+        document.getElementById('tree-root').appendChild(createTreeNode(htmlElementsTree));
+
+        document.querySelectorAll('.legend-item').forEach(legendItem => {
+            const targetCategory = legendItem.getAttribute('data-category');
+            legendItem.addEventListener('mouseenter', () => {
+                document.querySelectorAll('.node-content').forEach(el => {
+                    if (!el.classList.contains(targetCategory)) {
+                        el.style.opacity = '0.2';
+                    }
+                });
+            });
+            legendItem.addEventListener('mouseleave', () => {
+                document.querySelectorAll('.node-content').forEach(el => {
+                    el.style.opacity = '1';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
