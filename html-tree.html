@@ -34,6 +34,14 @@
             margin: 0 auto 30px;
             text-align: center;
         }
+        .header-content{
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            max-width: 1400px; 
+            margin: 0 auto 30px; 
+            position: relative;
+            }
 
         h1 {
             font-size: clamp(1.8rem, 3vw, 2.4rem);
@@ -318,6 +326,7 @@
         .controls {
             display: flex;
             gap: 12px;
+            position: absolute; right: 0;
         }
 
         .control-btn {
@@ -464,9 +473,9 @@
 
 <body>
     <div class="header-wrap">
-        <div style="display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto 30px; position: relative;">
+        <div class="header-content">
             <h1>HTML5 元素层级结构</h1>
-            <div class="controls" style="position: absolute; right: 0;">
+            <div class="controls" >
                 <button class="control-btn" onclick="toggleExpand()">展开</button>
                 <button class="control-btn" onclick="toggleCompact()">并拢</button>
             </div>
