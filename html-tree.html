@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -315,11 +316,8 @@
         }
 
         .controls {
-            max-width: 1400px;
-            margin: 0 auto 20px;
             display: flex;
             gap: 12px;
-            justify-content: flex-end;
         }
 
         .control-btn {
@@ -344,29 +342,89 @@
             border-color: #3b82f6;
         }
 
-        .tree-container.compact .tree-node .children {
+        .tree-container.compact .tree-node:has(
+            > .node-content[data-tag="head"],
+            > .node-content[data-tag="行内元素"],
+            > .node-content[data-tag="标题与文本"],
+            > .node-content[data-tag="通用容器"],
+            > .node-content[data-tag="页面结构"],
+            > .node-content[data-tag="列表"],
+            > .node-content[data-tag="table"],
+            > .node-content[data-tag="form"],
+            > .node-content[data-tag="媒体与嵌入"]
+        ) .children.show {
             display: flex !important;
             flex-wrap: wrap;
             gap: 8px;
             margin: 8px 0 8px 32px;
         }
 
-        .tree-container.compact .tree-node .children .tree-node {
+        .tree-container.compact .tree-node:has(
+            > .node-content[data-tag="head"],
+            > .node-content[data-tag="行内元素"],
+            > .node-content[data-tag="标题与文本"],
+            > .node-content[data-tag="通用容器"],
+            > .node-content[data-tag="页面结构"],
+            > .node-content[data-tag="列表"],
+            > .node-content[data-tag="table"],
+            > .node-content[data-tag="form"],
+            > .node-content[data-tag="媒体与嵌入"]
+        ) .children.show .tree-node {
             margin-left: 0;
         }
 
-        .tree-container.compact .tree-node .children .node-content {
+        .tree-container.compact .tree-node:has(
+            > .node-content[data-tag="head"],
+            > .node-content[data-tag="行内元素"],
+            > .node-content[data-tag="标题与文本"],
+            > .node-content[data-tag="通用容器"],
+            > .node-content[data-tag="页面结构"],
+            > .node-content[data-tag="列表"],
+            > .node-content[data-tag="table"],
+            > .node-content[data-tag="form"],
+            > .node-content[data-tag="媒体与嵌入"]
+        ) .children.show .node-content {
             padding: 6px 10px;
             margin: 0;
             min-width: 100px;
         }
 
-        .tree-container.compact .tree-node .children .element-name,
-        .tree-container.compact .tree-node .children .element-desc {
+        .tree-container.compact .tree-node:has(
+            > .node-content[data-tag="head"],
+            > .node-content[data-tag="行内元素"],
+            > .node-content[data-tag="标题与文本"],
+            > .node-content[data-tag="通用容器"],
+            > .node-content[data-tag="页面结构"],
+            > .node-content[data-tag="列表"],
+            > .node-content[data-tag="table"],
+            > .node-content[data-tag="form"],
+            > .node-content[data-tag="媒体与嵌入"]
+        ) .children.show .element-name,
+        .tree-container.compact .tree-node:has(
+            > .node-content[data-tag="head"],
+            > .node-content[data-tag="行内元素"],
+            > .node-content[data-tag="标题与文本"],
+            > .node-content[data-tag="通用容器"],
+            > .node-content[data-tag="页面结构"],
+            > .node-content[data-tag="列表"],
+            > .node-content[data-tag="table"],
+            > .node-content[data-tag="form"],
+            > .node-content[data-tag="媒体与嵌入"]
+        ) .children.show .element-desc {
             display: none;
         }
 
-        .tree-container.compact .tree-node .children .toggle-icon {
+        .tree-container.compact .tree-node:has(
+            > .node-content[data-tag="head"],
+            > .node-content[data-tag="行内元素"],
+            > .node-content[data-tag="标题与文本"],
+            > .node-content[data-tag="通用容器"],
+            > .node-content[data-tag="页面结构"],
+            > .node-content[data-tag="列表"],
+            > .node-content[data-tag="table"],
+            > .node-content[data-tag="form"],
+            > .node-content[data-tag="媒体与嵌入"]
+        ) .children.show>.tree-node>.node-content>.toggle-icon.leaf {
             display: none;
         }
 
@@ -387,7 +445,17 @@
                 justify-content: center;
             }
 
-            .tree-container.compact .tree-node .children {
+            .tree-container.compact .tree-node:has(
+                > .node-content[data-tag="head"],
+                > .node-content[data-tag="行内元素"],
+                > .node-content[data-tag="标题与文本"],
+                > .node-content[data-tag="通用容器"],
+                > .node-content[data-tag="页面结构"],
+                > .node-content[data-tag="列表"],
+                > .node-content[data-tag="table"],
+                > .node-content[data-tag="form"],
+                > .node-content[data-tag="媒体与嵌入"]
+            ) .children.show {
                 margin-left: 24px;
             }
         }
@@ -396,14 +464,14 @@
 
 <body>
     <div class="header-wrap">
-        <h1>HTML5 元素层级结构</h1>
+        <div style="display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto 30px; position: relative;">
+            <h1>HTML5 元素层级结构</h1>
+            <div class="controls" style="position: absolute; right: 0;">
+                <button class="control-btn" onclick="toggleExpand()">展开</button>
+                <button class="control-btn" onclick="toggleCompact()">并拢</button>
+            </div>
+        </div>
         <div class="subtitle">点击节点展开/折叠子元素，悬停查看详情，点击复制标签</div>
-    </div>
-
-    <div class="controls">
-        <button class="control-btn" onclick="expandAll()">全部展开</button>
-        <button class="control-btn" onclick="collapseAll()">全部折叠</button>
-        <button class="control-btn" onclick="toggleCompact()">并拢</button>
     </div>
 
     <div class="tree-container">
@@ -490,9 +558,11 @@
                                 { tag: 'footer', name: '页面底部', desc: '定义页面底部区域,通常包含版权、联系方式', category: 'section-semantic' },
                                 { tag: 'article', name: '独立内容', desc: '独立的内容区块,如文章、新闻、帖子', category: 'section-semantic' },
                                 { tag: 'section', name: '内容区块', desc: '文档中的章节/区块', category: 'section-semantic' },
-                                { tag: 'details', name: '折叠详情', desc: '详情折叠容器', category: 'section-semantic', children: [
-                                    { tag: 'summary', name: '折叠摘要', desc: 'details的标题/摘要', category: 'section-semantic' }
-                                ]},
+                                {
+                                    tag: 'details', name: '折叠详情', desc: '详情折叠容器', category: 'section-semantic', children: [
+                                        { tag: 'summary', name: '折叠摘要', desc: 'details的标题/摘要', category: 'section-semantic' }
+                                    ]
+                                },
                                 { tag: 'dialog', name: '对话框', desc: '对话框/弹窗', category: 'section-semantic' }
                             ]
                         },
@@ -521,67 +591,85 @@
                             desc: '有序、无序和描述列表',
                             category: 'list-table',
                             children: [
-                                { tag: 'ul', name: '无序列表', desc: '无序列表', category: 'list-table', children: [
-                                    { tag: 'li', name: '列表项', desc: '列表项,ul/ol的子元素', category: 'list-table' }
-                                ]},
-                                { tag: 'ol', name: '有序列表', desc: '有序列表', category: 'list-table', children: [
-                                    { tag: 'li', name: '列表项', desc: '列表项,ul/ol的子元素', category: 'list-table' }
-                                ]},
-                                { tag: 'dl', name: '描述列表', desc: '描述列表', category: 'list-table', children: [
-                                    { tag: 'dt', name: '描述术语', desc: '描述列表的术语', category: 'list-table' },
-                                    { tag: 'dd', name: '描述内容', desc: '描述列表的描述内容', category: 'list-table' }
-                                ]}
+                                {
+                                    tag: 'ul', name: '无序列表', desc: '无序列表', category: 'list-table', children: [
+                                        { tag: 'li', name: '列表项', desc: '列表项,ul/ol的子元素', category: 'list-table' }
+                                    ]
+                                },
+                                {
+                                    tag: 'ol', name: '有序列表', desc: '有序列表', category: 'list-table', children: [
+                                        { tag: 'li', name: '列表项', desc: '列表项,ul/ol的子元素', category: 'list-table' }
+                                    ]
+                                },
+                                {
+                                    tag: 'dl', name: '描述列表', desc: '描述列表', category: 'list-table', children: [
+                                        { tag: 'dt', name: '描述术语', desc: '描述列表的术语', category: 'list-table' },
+                                        { tag: 'dd', name: '描述内容', desc: '描述列表的描述内容', category: 'list-table' }
+                                    ]
+                                }
                             ]
                         },
                         {
-                            tag: '表格',
-                            name: '表格元素',
-                            desc: '表格相关元素',
+                            tag: 'table',
+                            name: '表格容器',
+                            desc: '创建表格',
                             category: 'list-table',
                             children: [
-                                { tag: 'table', name: '表格', desc: '表格容器', category: 'list-table', children: [
-                                    { tag: 'caption', name: '表格标题', desc: '表格标题', category: 'list-table' },
-                                    { tag: 'thead', name: '表头分组', desc: '表格表头内容分组', category: 'list-table', children: [
-                                        { tag: 'tr', name: '表格行', desc: '表格行', category: 'list-table', children: [
-                                            { tag: 'th', name: '表头', desc: '表格表头单元格', category: 'list-table' }
-                                        ]}
-                                    ]},
-                                    { tag: 'tbody', name: '表体分组', desc: '表格主体内容分组', category: 'list-table', children: [
-                                        { tag: 'tr', name: '表格行', desc: '表格行', category: 'list-table', children: [
-                                            { tag: 'td', name: '单元格', desc: '表格单元格', category: 'list-table' }
-                                        ]}
-                                    ]},
-                                    { tag: 'tfoot', name: '表脚分组', desc: '表格页脚内容分组', category: 'list-table' },
-                                    { tag: 'colgroup', name: '列分组', desc: '表格列分组', category: 'list-table', children: [
+                                { tag: 'caption', name: '表格标题', desc: '表格标题', category: 'list-table' },
+                                {
+                                    tag: 'thead', name: '表头分组', desc: '表格表头内容分组', category: 'list-table', children: [
+                                        {
+                                            tag: 'tr', name: '表格行', desc: '表格行', category: 'list-table', children: [
+                                                { tag: 'th', name: '表头', desc: '表格表头单元格', category: 'list-table' }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    tag: 'tbody', name: '表体分组', desc: '表格主体内容分组', category: 'list-table', children: [
+                                        {
+                                            tag: 'tr', name: '表格行', desc: '表格行', category: 'list-table', children: [
+                                                { tag: 'td', name: '单元格', desc: '表格单元格', category: 'list-table' }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                { tag: 'tfoot', name: '表脚分组', desc: '表格页脚内容分组', category: 'list-table' },
+                                {
+                                    tag: 'colgroup', name: '列分组', desc: '表格列分组', category: 'list-table', children: [
                                         { tag: 'col', name: '列属性', desc: '表格列属性定义', category: 'list-table' }
-                                    ]}
-                                ]}
+                                    ]
+                                }
                             ]
                         },
                         {
-                            tag: '表单',
-                            name: '表单交互',
-                            desc: '表单和输入控件',
+                            tag: 'form',
+                            name: '表单容器',
+                            desc: '表单容器,用户输入交互的载体',
                             category: 'form-input',
                             children: [
-                                { tag: 'form', name: '表单容器', desc: '表单容器,用户输入交互的载体', category: 'form-input', children: [
-                                    { tag: 'input', name: '输入框', desc: '输入控件,支持文本、单选、复选等多种类型', category: 'form-input' },
-                                    { tag: 'textarea', name: '多行输入', desc: '多行文本输入框', category: 'form-input' },
-                                    { tag: 'button', name: '按钮', desc: '按钮', category: 'form-input' },
-                                    { tag: 'select', name: '下拉选择', desc: '下拉选择框', category: 'form-input', children: [
-                                        { tag: 'optgroup', name: '选项分组', desc: '下拉选择框的选项组', category: 'form-input', children: [
-                                            { tag: 'option', name: '选择项', desc: '下拉选择框的选项', category: 'form-input' }
-                                        ]}
-                                    ]},
-                                    { tag: 'label', name: '表单标签', desc: '表单元素的标签,提升可访问性', category: 'form-input' },
-                                    { tag: 'fieldset', name: '表单分组', desc: '表单元素分组', category: 'form-input', children: [
+                                { tag: 'input', name: '输入框', desc: '输入控件,支持文本、单选、复选等多种类型', category: 'form-input' },
+                                { tag: 'textarea', name: '多行输入', desc: '多行文本输入框', category: 'form-input' },
+                                { tag: 'button', name: '按钮', desc: '按钮', category: 'form-input' },
+                                {
+                                    tag: 'select', name: '下拉选择', desc: '下拉选择框', category: 'form-input', children: [
+                                        {
+                                            tag: 'optgroup', name: '选项分组', desc: '下拉选择框的选项组', category: 'form-input', children: [
+                                                { tag: 'option', name: '选择项', desc: '下拉选择框的选项', category: 'form-input' }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                { tag: 'label', name: '表单标签', desc: '表单元素的标签,提升可访问性', category: 'form-input' },
+                                {
+                                    tag: 'fieldset', name: '表单分组', desc: '表单元素分组', category: 'form-input', children: [
                                         { tag: 'legend', name: '分组标题', desc: 'fieldset分组的标题', category: 'form-input' }
-                                    ]},
-                                    { tag: 'datalist', name: '预设选项', desc: '可点击的标注列表', category: 'form-input' },
-                                    { tag: 'output', name: '输出结果', desc: '输出结果,用于展示计算结果', category: 'form-input' },
-                                    { tag: 'progress', name: '进度条', desc: '进度条', category: 'form-input' },
-                                    { tag: 'meter', name: '度量条', desc: '度量条,用于展示数值范围', category: 'form-input' }
-                                ]}
+                                    ]
+                                },
+                                { tag: 'datalist', name: '预设选项', desc: '可点击的标注列表', category: 'form-input' },
+                                { tag: 'output', name: '输出结果', desc: '输出结果,用于展示计算结果', category: 'form-input' },
+                                { tag: 'progress', name: '进度条', desc: '进度条', category: 'form-input' },
+                                { tag: 'meter', name: '度量条', desc: '度量条,用于展示数值范围', category: 'form-input' }
                             ]
                         },
                         {
@@ -592,27 +680,37 @@
                             children: [
                                 { tag: 'a', name: '超链接', desc: '超链接,用于页面跳转', category: 'media' },
                                 { tag: 'img', name: '图片', desc: '图片嵌入', category: 'media' },
-                                { tag: 'audio', name: '音频', desc: '音频嵌入', category: 'media', children: [
-                                    { tag: 'source', name: '媒体源', desc: '媒体资源源地址,用于audio/video', category: 'media' },
-                                    { tag: 'track', name: '媒体轨道', desc: '媒体轨道,用于字幕、描述', category: 'media' }
-                                ]},
-                                { tag: 'video', name: '视频', desc: '视频嵌入', category: 'media', children: [
-                                    { tag: 'source', name: '媒体源', desc: '媒体资源源地址,用于audio/video', category: 'media' },
-                                    { tag: 'track', name: '媒体轨道', desc: '媒体轨道,用于字幕、描述', category: 'media' }
-                                ]},
+                                {
+                                    tag: 'audio', name: '音频', desc: '音频嵌入', category: 'media', children: [
+                                        { tag: 'source', name: '媒体源', desc: '媒体资源源地址,用于audio/video', category: 'media' },
+                                        { tag: 'track', name: '媒体轨道', desc: '媒体轨道,用于字幕、描述', category: 'media' }
+                                    ]
+                                },
+                                {
+                                    tag: 'video', name: '视频', desc: '视频嵌入', category: 'media', children: [
+                                        { tag: 'source', name: '媒体源', desc: '媒体资源源地址,用于audio/video', category: 'media' },
+                                        { tag: 'track', name: '媒体轨道', desc: '媒体轨道,用于字幕、描述', category: 'media' }
+                                    ]
+                                },
                                 { tag: 'canvas', name: '画布', desc: '画布,用于JS绘制图形、动画', category: 'media' },
                                 { tag: 'svg', name: '矢量图形', desc: '矢量图形容器', category: 'media' },
                                 { tag: 'iframe', name: '内联框架', desc: '嵌入外部页面', category: 'media' },
                                 { tag: 'embed', name: '嵌入内容', desc: '嵌入外部内容,如插件', category: 'media' },
-                                { tag: 'object', name: '对象嵌入', desc: '嵌入外部内容,支持备用内容', category: 'media', children: [
-                                    { tag: 'param', name: '对象参数', desc: 'object的参数', category: 'media' }
-                                ]},
-                                { tag: 'figure', name: '媒体容器', desc: '媒体内容容器,如图表、图片', category: 'media', children: [
-                                    { tag: 'figcaption', name: '媒体标题', desc: 'figure的标题/说明', category: 'media' }
-                                ]},
-                                { tag: 'map', name: '图片映射', desc: '图片映射', category: 'media', children: [
-                                    { tag: 'area', name: '映射区域', desc: '图片映射的可点击区域', category: 'media' }
-                                ]}
+                                {
+                                    tag: 'object', name: '对象嵌入', desc: '嵌入外部内容,支持备用内容', category: 'media', children: [
+                                        { tag: 'param', name: '对象参数', desc: 'object的参数', category: 'media' }
+                                    ]
+                                },
+                                {
+                                    tag: 'figure', name: '媒体容器', desc: '媒体内容容器,如图表、图片', category: 'media', children: [
+                                        { tag: 'figcaption', name: '媒体标题', desc: 'figure的标题/说明', category: 'media' }
+                                    ]
+                                },
+                                {
+                                    tag: 'map', name: '图片映射', desc: '图片映射', category: 'media', children: [
+                                        { tag: 'area', name: '映射区域', desc: '图片映射的可点击区域', category: 'media' }
+                                    ]
+                                }
                             ]
                         },
                         {
@@ -658,10 +756,12 @@
                             children: [
                                 { tag: 'div', name: '块容器', desc: '块级通用容器,用于布局和样式控制', category: 'other' },
                                 { tag: 'template', name: '内容模板', desc: '模板,用于JS克隆内容', category: 'other' },
-                                { tag: 'ruby', name: '注音容器', desc: 'ruby注音容器', category: 'other', children: [
-                                    { tag: 'rt', name: '注音文本', desc: 'ruby注音文本', category: 'other' },
-                                    { tag: 'rp', name: '注音备用', desc: 'ruby不支持时的备用内容', category: 'other' }
-                                ]},
+                                {
+                                    tag: 'ruby', name: '注音容器', desc: 'ruby注音容器', category: 'other', children: [
+                                        { tag: 'rt', name: '注音文本', desc: 'ruby注音文本', category: 'other' },
+                                        { tag: 'rp', name: '注音备用', desc: 'ruby不支持时的备用内容', category: 'other' }
+                                    ]
+                                },
                                 { tag: 'menu', name: '菜单', desc: '菜单列表', category: 'other' },
                                 { tag: 'search', name: '搜索容器', desc: '搜索结果分组', category: 'other' },
                                 { tag: 'slot', name: '组件插槽', desc: '插槽,用于Web组件', category: 'other' }
@@ -672,39 +772,52 @@
             ]
         };
 
+        // 创建悬浮提示框元素
         const tooltip = document.createElement('div');
         tooltip.className = 'tooltip';
         document.body.appendChild(tooltip);
 
+        // 创建复制成功提示元素
         const copyNotice = document.createElement('div');
         copyNotice.className = 'copy-notice';
         copyNotice.textContent = '已复制到剪贴板！';
         document.body.appendChild(copyNotice);
 
+        /**
+         * 递归创建树节点
+         * @param {Object} node - 节点数据
+         * @param {number} level - 节点层级
+         * @returns {HTMLElement} 创建的节点元素
+         */
         function createTreeNode(node, level = 0) {
             const nodeDiv = document.createElement('div');
             nodeDiv.className = 'tree-node';
 
             const contentDiv = document.createElement('div');
             contentDiv.className = `node-content ${node.category}`;
+            contentDiv.setAttribute('data-tag', node.tag);
 
             const hasChildren = node.children && node.children.length > 0;
 
+            // 创建展开/折叠图标
             const toggleIcon = document.createElement('div');
             toggleIcon.className = `toggle-icon ${hasChildren ? '' : 'leaf'}`;
             toggleIcon.textContent = hasChildren ? '▶' : '•';
             contentDiv.appendChild(toggleIcon);
 
+            // 创建元素标签徽章
             const badge = document.createElement('div');
             badge.className = `element-badge ${node.category}`;
             badge.textContent = node.tag;
             contentDiv.appendChild(badge);
 
+            // 创建元素名称
             const name = document.createElement('div');
             name.className = 'element-name';
             name.textContent = node.name;
             contentDiv.appendChild(name);
 
+            // 创建元素描述
             const desc = document.createElement('div');
             desc.className = 'element-desc';
             desc.textContent = node.desc;
@@ -712,20 +825,23 @@
 
             nodeDiv.appendChild(contentDiv);
 
+            // 处理有子元素的节点
             if (hasChildren) {
                 const childrenDiv = document.createElement('div');
                 childrenDiv.className = 'children';
 
+                // 递归创建子节点
                 node.children.forEach(child => {
                     childrenDiv.appendChild(createTreeNode(child, level + 1));
                 });
 
                 nodeDiv.appendChild(childrenDiv);
 
+                // 点击事件：展开/折叠子节点
                 contentDiv.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const isExpanded = childrenDiv.classList.contains('show');
-                    
+
                     if (isExpanded) {
                         childrenDiv.classList.remove('show');
                         toggleIcon.classList.remove('expanded');
@@ -737,10 +853,12 @@
                     }
                 });
             } else {
+                // 处理叶子节点（无子女）
                 contentDiv.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const fullTag = `<${node.tag}></${node.tag}>`;
-                    
+
+                    // 复制到剪贴板
                     navigator.clipboard.writeText(fullTag).then(() => {
                         copyNotice.textContent = `${fullTag} 已复制到剪贴板！`;
                         copyNotice.style.backgroundColor = '#10b981';
@@ -759,6 +877,7 @@
                 });
             }
 
+            // 鼠标悬停显示详情
             contentDiv.addEventListener('mouseenter', (e) => {
                 const tag = node.tag;
                 const desc = node.desc;
@@ -766,12 +885,14 @@
                 tooltip.classList.add('show');
             });
 
+            // 提示框跟随鼠标移动
             contentDiv.addEventListener('mousemove', (e) => {
                 const offsetX = 15;
                 const offsetY = 15;
                 let x = e.clientX + offsetX;
                 let y = e.clientY + offsetY;
 
+                // 防止提示框超出屏幕
                 const rect = tooltip.getBoundingClientRect();
                 if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - offsetX;
                 if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - offsetY;
@@ -780,6 +901,7 @@
                 tooltip.style.top = y + 'px';
             });
 
+            // 鼠标离开隐藏提示
             contentDiv.addEventListener('mouseleave', () => {
                 tooltip.classList.remove('show');
             });
@@ -787,37 +909,52 @@
             return nodeDiv;
         }
 
-        function expandAll() {
-            document.querySelectorAll('.children').forEach(el => {
-                el.classList.add('show');
-            });
-            document.querySelectorAll('.toggle-icon:not(.leaf)').forEach(el => {
-                el.classList.add('expanded');
-            });
-            document.querySelectorAll('.node-content').forEach(el => {
-                if (el.nextElementSibling && el.nextElementSibling.classList.contains('children')) {
-                    el.classList.add('active');
-                }
-            });
+        let isExpanded = false;
+
+        /**
+         * 切换展开/折叠状态
+         */
+        function toggleExpand() {
+            isExpanded = !isExpanded;
+            const btn = document.querySelector('button[onclick="toggleExpand()"]');
+            
+            if (isExpanded) {
+                document.querySelectorAll('.children').forEach(el => {
+                    el.classList.add('show');
+                });
+                document.querySelectorAll('.toggle-icon:not(.leaf)').forEach(el => {
+                    el.classList.add('expanded');
+                });
+                document.querySelectorAll('.node-content').forEach(el => {
+                    if (el.nextElementSibling && el.nextElementSibling.classList.contains('children')) {
+                        el.classList.add('active');
+                    }
+                });
+                btn.textContent = '折叠';
+                btn.classList.add('active');
+            } else {
+                document.querySelectorAll('.children').forEach(el => {
+                    el.classList.remove('show');
+                });
+                document.querySelectorAll('.toggle-icon').forEach(el => {
+                    el.classList.remove('expanded');
+                });
+                document.querySelectorAll('.node-content').forEach(el => {
+                    el.classList.remove('active');
+                });
+                btn.textContent = '展开';
+                btn.classList.remove('active');
+            }
         }
 
-        function collapseAll() {
-            document.querySelectorAll('.children').forEach(el => {
-                el.classList.remove('show');
-            });
-            document.querySelectorAll('.toggle-icon').forEach(el => {
-                el.classList.remove('expanded');
-            });
-            document.querySelectorAll('.node-content').forEach(el => {
-                el.classList.remove('active');
-            });
-        }
-
+        /**
+         * 切换紧凑模式
+         */
         function toggleCompact() {
             const treeContainer = document.querySelector('.tree-container');
             const isCompact = treeContainer.classList.contains('compact');
             const btn = document.querySelector('button[onclick="toggleCompact()"]');
-            
+
             if (isCompact) {
                 treeContainer.classList.remove('compact');
                 btn.textContent = '并拢';
@@ -829,8 +966,10 @@
             }
         }
 
+        // 初始化树结构
         document.getElementById('tree-root').appendChild(createTreeNode(htmlElementsTree));
 
+        // 图例交互：悬停高亮对应类别
         document.querySelectorAll('.legend-item').forEach(legendItem => {
             const targetCategory = legendItem.getAttribute('data-category');
             legendItem.addEventListener('mouseenter', () => {
@@ -848,4 +987,5 @@
         });
     </script>
 </body>
+
 </html>
